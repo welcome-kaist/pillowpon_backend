@@ -1,12 +1,9 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { Entity, PrimaryColumn, Column, OneToMany } from 'typeorm';
 import { PillowponMetadataEntity } from './metadata.entity';
 
 @Entity('User')
 export class UserEntity {
-  @PrimaryGeneratedColumn()
-  id: number;
-
-  @Column({ type: 'varchar', length: 50, unique: true })
+  @PrimaryColumn({ type: 'varchar', length: 50 })
   user_id: string;
 
   @Column({ type: 'varchar', length: 50, unique: true })

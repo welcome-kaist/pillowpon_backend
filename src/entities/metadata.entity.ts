@@ -3,7 +3,7 @@ import {
   PrimaryGeneratedColumn,
   Column,
   ManyToOne,
-  JoinColumn, 
+  JoinColumn,
 } from 'typeorm';
 import { UserEntity } from './user.entity';
 
@@ -12,8 +12,8 @@ export class PillowponMetadataEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => UserEntity, (user) => user.metadata, { onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'userId' })
+  @ManyToOne(() => UserEntity, (user) => user.metadata)
+  @JoinColumn({ name: 'user_id' })
   user: UserEntity;
 
   @Column({ type: 'double' })
