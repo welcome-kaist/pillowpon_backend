@@ -9,6 +9,7 @@ async function bootstrap() {
     .setTitle('Pillowpon Backend')
     .setDescription('NestJS-based backend for pillowpon service.')
     .setVersion('0.0.1')
+    .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, options);

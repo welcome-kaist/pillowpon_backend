@@ -9,6 +9,8 @@ export class MetadataService {
   constructor(
     @InjectRepository(MetadataEntity)
     private readonly metadataRepository: Repository<MetadataEntity>,
+
+    @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
   ) {}
 
