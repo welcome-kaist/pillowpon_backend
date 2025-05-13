@@ -7,8 +7,8 @@ import {
 } from 'typeorm';
 import { UserEntity } from './user.entity';
 
-@Entity('PillowponMetadata')
-export class PillowponMetadataEntity {
+@Entity('Metadata')
+export class MetadataEntity {
   @PrimaryGeneratedColumn()
   id: number;
 

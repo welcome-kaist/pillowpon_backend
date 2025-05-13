@@ -1,5 +1,5 @@
 import { Entity, PrimaryColumn, Column, OneToMany } from 'typeorm';
-import { PillowponMetadataEntity } from './metadata.entity';
+import { MetadataEntity } from './metadata.entity';
 
 @Entity('User')
 export class UserEntity {
@@ -21,8 +21,8 @@ export class UserEntity {
   @Column({ type: 'varchar', length: 10, nullable: true })
   gender: string;
 
-  @OneToMany(() => PillowponMetadataEntity, (metadata) => metadata.user, {
+  @OneToMany(() => MetadataEntity, (metadata) => metadata.user, {
     cascade: true,
   })
-  metadata: PillowponMetadataEntity[];
+  metadata: MetadataEntity[];
 }
