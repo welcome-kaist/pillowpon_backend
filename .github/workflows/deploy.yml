@@ -6,44 +6,40 @@ on:
       - main
 
 jobs:
-  deploy:
-    name: Deploy to EC2
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      - name: Log in to Docker Hub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      - name: Build Docker image
+        run: |
+          sudo docker build -t ${{ secrets.DOCKER_USERNAME }}/pillowpon-backend:latest .
+
+      - name: Push Docker image
+        run: |
+          sudo docker push ${{ secrets.DOCKER_USERNAME }}/pillowpon-backend:latest
+
       - name: Setup SSH key
         run: |
           printf "%s\n" "${{ secrets.EC2_SSH_KEY }}" > key.pem
           chmod 600 key.pem
 
-      - name: Debug secret values
-        run: |
-          echo "DATABASE_URL: [${{ secrets.DATABASE_URL }}]"
-          echo "JWT_SECRET: [${{ secrets.JWT_SECRET }}]"
-
-      - name: Deploy via SSH
+      - name: Deploy on EC2
         run: |
           ssh -o StrictHostKeyChecking=no -i key.pem ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} << EOF
-            # 1. 프로젝트 디렉토리로 이동하거나 clone
-            cd pillowpon_backend || git clone https://github.com/${{ github.repository }}.git pillowpon_backend && cd pillowpon_backend
-
-            # 2. 최신 코드 pull
-            git pull origin main
-
-            # 3. .env.dev 파일 구성
-            echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" > .env.dev
-            echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env.dev
-
-            # 4. Docker build & run
-            sudo docker build -t pillowpon-backend .
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/pillowpon-backend:latest
             sudo docker stop pillowpon-backend || true
             sudo docker rm pillowpon-backend || true
+            echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" > .env.dev
+            echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env.dev
             sudo docker run -d \
               --name pillowpon-backend \
               --env-file .env.dev \
               -p 3000:3000 \
-              pillowpon-backend
+              ${{ secrets.DOCKER_USERNAME }}/pillowpon-backend:latest
           EOF
