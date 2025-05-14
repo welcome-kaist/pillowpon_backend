@@ -40,10 +40,4 @@ export class UserController {
       gender,
     );
   }
-
-  @UseGuards(JwtAuthGuard)
-  @Get('user-info')
-  async getUserInfo() {
-    return 'user-info Page';
-  }
 }
