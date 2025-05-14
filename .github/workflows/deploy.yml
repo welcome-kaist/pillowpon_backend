@@ -1,4 +1,4 @@
-name: Deploy to EC2 via Docker
+name: Deploy to EC2
 
 on:
   push:
@@ -7,37 +7,30 @@ on:
 
 jobs:
   deploy:
+    name: Deploy to EC2
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
-      - name: Set up SSH key
+      - name: Setup SSH key
         run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
+          echo "${{ secrets.EC2_SSH_KEY }}" > key.pem
+          chmod 600 key.pem
 
-      - name: Login to Docker Hub
+      - name: Deploy via SSH
         run: |
-          echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
-
-      - name: Build and push Docker image
-        run: |
-          docker build -t ${{ secrets.DOCKER_IMAGE }} .
-          docker push ${{ secrets.DOCKER_IMAGE }}
-
-      - name: Deploy to EC2 via SSH and Docker
-        run: |
-          ssh ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} << 'EOF'
-            docker stop pillowpon-backend || true
-            docker rm pillowpon-backend || true
-            docker pull ${{ secrets.DOCKER_IMAGE }}
+          ssh -o StrictHostKeyChecking=no -i key.pem ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} << 'EOF'
+            cd pillowpon_backend || git clone https://github.com/welcome-kaist/pillowpon_backend.git pillowpon_backend && cd pillowpon_backend
+            git pull origin main
+            echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" > .env.dev
+            echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env.dev
+            docker build -t pillowpon-backend .
+            docker stop pillowpon-backend || true && docker rm pillowpon-backend || true
             docker run -d \
               --name pillowpon-backend \
               --env-file .env.dev \
               -p 3000:3000 \
-              ${{ secrets.DOCKER_IMAGE }}
+              pillowpon-backend
           EOF
