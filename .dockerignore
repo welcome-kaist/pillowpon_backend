@@ -1,4 +1,9 @@
-.git
-_Dockerfile_
 node_modules
-.env\*
+dist
+.env
+.env.*
+Dockerfile
+README.md
+.git
+.gitignore
+.vscode
