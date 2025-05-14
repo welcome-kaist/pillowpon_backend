@@ -19,10 +19,10 @@ jobs:
           echo "${{ secrets.EC2_SSH_KEY }}" > key.pem
           chmod 600 key.pem
 
-      - name: Debug secrets
+      - name: Debug secret values
         run: |
-          echo "HOST: ${{ secrets.EC2_HOST }}"
-          echo "USER: ${{ secrets.EC2_USERNAME }}"
+          echo "DATABASE_URL: [${{ secrets.DATABASE_URL }}]"
+          echo "JWT_SECRET: [${{ secrets.JWT_SECRET }}]"
 
       - name: Deploy via SSH
         run: |
