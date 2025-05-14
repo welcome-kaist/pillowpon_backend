@@ -21,13 +21,21 @@ jobs:
 
       - name: Deploy via SSH
         run: |
-          ssh -o StrictHostKeyChecking=no -i key.pem ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} << 'EOF'
-            cd pillowpon_backend || git clone https://github.com/welcome-kaist/pillowpon_backend.git pillowpon_backend && cd pillowpon_backend
+          ssh -o StrictHostKeyChecking=no -i key.pem ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} << EOF
+            # 1. 프로젝트 디렉토리로 이동하거나 clone
+            cd pillowpon_backend || git clone https://github.com/${{ github.repository }}.git pillowpon_backend && cd pillowpon_backend
+
+            # 2. 최신 코드 pull
             git pull origin main
+
+            # 3. .env.dev 파일 구성
             echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" > .env.dev
             echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env.dev
+
+            # 4. Docker build & run
             docker build -t pillowpon-backend .
-            docker stop pillowpon-backend || true && docker rm pillowpon-backend || true
+            docker stop pillowpon-backend || true
+            docker rm pillowpon-backend || true
             docker run -d \
               --name pillowpon-backend \
               --env-file .env.dev \
