@@ -38,10 +38,10 @@ jobs:
             echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env.dev
 
             # 4. Docker build & run
-            docker build -t pillowpon-backend .
-            docker stop pillowpon-backend || true
-            docker rm pillowpon-backend || true
-            docker run -d \
+            sudo docker build -t pillowpon-backend .
+            sudo docker stop pillowpon-backend || true
+            sudo docker rm pillowpon-backend || true
+            sudo docker run -d \
               --name pillowpon-backend \
               --env-file .env.dev \
               -p 3000:3000 \
