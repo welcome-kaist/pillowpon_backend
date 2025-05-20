@@ -7,6 +7,7 @@ import { UserModule } from './res/user/user.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { MetadataModule } from './res/metadata/metadata.module';
+import { SleepSessionModule } from './res/sleep-session/sleep-session.module';
 
 console.log(`.env.${process.env.NODE_ENV}`);
 
@@ -35,6 +36,7 @@ console.log(`.env.${process.env.NODE_ENV}`);
     UserModule,
     AuthModule,
     MetadataModule,
+    SleepSessionModule,
   ],
   controllers: [AppController],
   providers: [AppService],

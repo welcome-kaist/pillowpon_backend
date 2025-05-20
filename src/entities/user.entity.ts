@@ -1,6 +1,7 @@
 import { Entity, PrimaryColumn, Column, OneToMany } from 'typeorm';
 import { MetadataEntity } from './metadata.entity';
 import { ApiProperty } from '@nestjs/swagger';
+import { SleepSessionEntity } from './sleep-session.entity';
 
 @Entity('User')
 export class UserEntity {
@@ -46,8 +47,8 @@ export class UserEntity {
   @Column({ type: 'varchar', length: 10, nullable: true })
   gender: string;
 
-  @OneToMany(() => MetadataEntity, (metadata) => metadata.user, {
+  @OneToMany(() => SleepSessionEntity, (sleep_session) => sleep_session.user, {
     cascade: true,
   })
-  metadata: MetadataEntity[];
+  sleep_sessions: SleepSessionEntity[];
 }

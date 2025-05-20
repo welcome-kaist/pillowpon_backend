@@ -7,15 +7,19 @@ import {
 } from 'typeorm';
 import { UserEntity } from './user.entity';
 import { ApiProperty } from '@nestjs/swagger';
+import { SleepSessionEntity } from './sleep-session.entity';
 
 @Entity('Metadata')
 export class MetadataEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => UserEntity, (user) => user.metadata)
-  @JoinColumn({ name: 'user_id' })
-  user: UserEntity;
+  @ManyToOne(
+    () => SleepSessionEntity,
+    (sleep_session) => sleep_session.metadata,
+  )
+  @JoinColumn({ name: 'sleep_session_id' })
+  sleep_session: SleepSessionEntity;
 
   @ApiProperty({
     example: '0.0',

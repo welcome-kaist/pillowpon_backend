@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MetadataEntity } from 'src/entities/metadata.entity';
-import { UserEntity } from 'src/entities/user.entity';
+import { SleepSessionEntity } from 'src/entities/sleep-session.entity';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -10,12 +10,12 @@ export class MetadataService {
     @InjectRepository(MetadataEntity)
     private readonly metadataRepository: Repository<MetadataEntity>,
 
-    @InjectRepository(UserEntity)
-    private readonly userRepository: Repository<UserEntity>,
+    @InjectRepository(SleepSessionEntity)
+    private readonly sleepSessionRepository: Repository<SleepSessionEntity>,
   ) {}
 
   async createMetadata(data: {
-    user_id: string;
+    sleep_session_id: number;
     pressure: number;
     accelerator: number;
     humidity: number;
@@ -25,17 +25,21 @@ export class MetadataService {
     sound: number;
     time: Date;
   }): Promise<MetadataEntity> {
-    const user = await this.userRepository.findOneBy({ user_id: data.user_id });
-    if (!user) {
-      throw new NotFoundException(`User with ID ${data.user_id} not found`);
+    const sleepSession = await this.sleepSessionRepository.findOneBy({
+      id: data.sleep_session_id,
+    });
+    if (!sleepSession) {
+      throw new NotFoundException(
+        `Sleep Session with ID ${data.sleep_session_id} not found`,
+      );
     }
 
     const metadata = this.metadataRepository.create({
       ...data,
-      user,
+      sleep_session: sleepSession,
     });
 
-    delete (metadata as any).user_id;
+    delete (metadata as any).sleep_session_id;
 
     return await this.metadataRepository.save(metadata);
   }
