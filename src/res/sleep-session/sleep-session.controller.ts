@@ -1,9 +1,23 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { SleepSessionService } from './sleep-session.service';
 import { User } from 'src/decorators/user.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { CreateMetadataDTO } from 'src/dtos/metadata/create-metadata.dto';
-import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiOperation,
+  ApiParam,
+  ApiTags,
+} from '@nestjs/swagger';
 import { SleepSessionEntity } from 'src/entities/sleep-session.entity';
 
 @ApiTags('SleepSession API')
@@ -17,7 +31,7 @@ export class SleepSessionController {
   })
   @ApiBearerAuth('access-token')
   @UseGuards(JwtAuthGuard)
-  @Post('start')
+  @Post()
   async createSleepSession(@User() user) {
     console.log('>>> USER:', user);
     const sleepSession = await this.sleepSessionService.createSleepSession({
@@ -28,14 +42,25 @@ export class SleepSessionController {
   }
 
   @ApiBearerAuth('access-token')
-  @UseGuards(JwtAuthGuard)
-  @Post('end')
   @ApiOperation({
     summary: '수면 종료 API',
     description: '수면 세션을 종료하고 점수를 계산하여 상태를 업데이트',
   })
-  @ApiBody({ schema: { example: { sleep_session_id: 1 } } })
-  async endSleepSession(@Body('sleep_session_id') sessionId: number) {
-    return this.sleepSessionService.endSleepSession(sessionId);
+  @UseGuards(JwtAuthGuard)
+  @Patch(':id')
+  @ApiParam({ name: 'id', description: '종료할 수면 세션의 ID' })
+  async endSleepSession(@Param('id') sessionId: number) {
+    return await this.sleepSessionService.endSleepSession(sessionId);
+  }
+
+  @ApiBearerAuth('access-token')
+  @UseGuards(JwtAuthGuard)
+  @Get()
+  @ApiOperation({
+    summary: '수면 세션 전체 조회 API',
+    description: '현재 로그인한 사용자의 모든 수면 세션을 조회',
+  })
+  async getSleepSessions(@User() user) {
+    return this.sleepSessionService.getSessionsByUser(user.id);
   }
 }

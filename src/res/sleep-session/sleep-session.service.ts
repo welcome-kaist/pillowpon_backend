@@ -64,20 +64,21 @@ export class SleepSessionService {
       throw new BadRequestException('이미 종료된 수면 세션입니다.');
     }
 
-    // 1. 관련 metadata 조회
     const metadataList = session.metadata;
-    if (!metadataList || metadataList.length === 0) {
-      throw new BadRequestException('해당 세션에 메타데이터가 없습니다.');
-    }
 
-    // 2. 점수 계산
     const sleepScore = this.calculateSleepScore(metadataList);
 
-    // 3. 상태 업데이트
     session.sleep_score = sleepScore;
     session.sleep_status = 'completed';
     session.end_time = new Date();
 
     return this.sleepSessionRepository.save(session);
+  }
+
+  async getSessionsByUser(user_id: string): Promise<SleepSessionEntity[]> {
+    return this.sleepSessionRepository.find({
+      where: { user: { user_id } },
+      order: { start_time: 'DESC' },
+    });
   }
 }
