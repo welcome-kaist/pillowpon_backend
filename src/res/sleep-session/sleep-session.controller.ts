@@ -25,4 +25,15 @@ export class SleepSessionController {
 
     return sleepSession;
   }
+
+  @Post('end')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({
+    summary: '수면 종료 API',
+    description: '수면 세션을 종료하고 점수를 계산하여 상태를 업데이트합니다.',
+  })
+  @ApiBody({ schema: { example: { sleep_session_id: 1 } } })
+  async endSleepSession(@Body('sleep_session_id') sessionId: number) {
+    return this.sleepSessionService.endSleepSession(sessionId);
+  }
 }

@@ -17,10 +17,9 @@ export class MetadataController {
   @ApiBody({
     type: CreateMetadataDTO,
   })
-  @UseGuards(JwtAuthGuard)
   @Post()
-  async createMetadata(@Body() body: CreateMetadataDTO, @User() user) {
-    const user_id: string = user.id;
+  async createMetadata(@Body() body: CreateMetadataDTO) {
+    const sleep_session_id: number = body.sleep_session_id;
     const pressure: number = body.pressure;
     const accelerator: number = body.accelerator;
     const humidity: number = body.humidity;
@@ -31,7 +30,7 @@ export class MetadataController {
     const time: Date = body.time;
 
     const metadata = await this.metadataService.createMetadata({
-      user_id,
+      sleep_session_id,
       pressure,
       accelerator,
       humidity,
