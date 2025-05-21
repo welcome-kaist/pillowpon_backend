@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Param, Post, UseGuards } from '@nestjs/common';
 import { MetadataService } from './metadata.service';
 import { User } from 'src/decorators/user.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
@@ -6,7 +6,7 @@ import { CreateMetadataDTO } from 'src/dtos/metadata/create-metadata.dto';
 import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Metadata API')
-@Controller('metadata')
+@Controller('sleep-session/:id/metadata')
 export class MetadataController {
   constructor(private readonly metadataService: MetadataService) {}
 
@@ -18,8 +18,10 @@ export class MetadataController {
     type: CreateMetadataDTO,
   })
   @Post()
-  async createMetadata(@Body() body: CreateMetadataDTO) {
-    const sleep_session_id: number = body.sleep_session_id;
+  async createMetadata(
+    @Param('id') sleep_session_id: number,
+    @Body() body: CreateMetadataDTO,
+  ) {
     const pressure: number = body.pressure;
     const accelerator: number = body.accelerator;
     const humidity: number = body.humidity;

@@ -1,9 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateMetadataDTO {
-  @ApiProperty({ example: 1, description: '연결할 수면 세션 ID' })
-  sleep_session_id: number;
-
   @ApiProperty({ example: 0.42, description: '압력 값' })
   pressure: number;
 
