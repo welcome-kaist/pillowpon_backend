@@ -47,7 +47,7 @@ export class SleepSessionEntity {
     example: '2025-05-21T07:00:00.000Z',
     description: '수면 종료 시간',
   })
-  @Column({ type: 'datetime' })
+  @Column({ type: 'datetime', nullable: true })
   end_time: Date;
 
   @OneToMany(() => MetadataEntity, (metadata) => metadata.sleep_session, {

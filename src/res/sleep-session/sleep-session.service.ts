@@ -4,7 +4,6 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CreateMetadataDTO } from 'src/dtos/metadata/create-metadata.dto';
 import { MetadataEntity } from 'src/entities/metadata.entity';
 import { SleepSessionEntity } from 'src/entities/sleep-session.entity';
 import { UserEntity } from 'src/entities/user.entity';
@@ -42,11 +41,12 @@ export class SleepSessionService {
       throw new NotFoundException(`User with ID ${data.user_id} not found`);
     }
     const session = this.sleepSessionRepository.create({
-      ...data,
       user,
+      sleep_score: 0,
+      sleep_status: 'ongoing',
+      start_time: new Date(),
     });
 
-    delete (session as any).user_id;
     return this.sleepSessionRepository.save(session);
   }
 
@@ -71,13 +71,13 @@ export class SleepSessionService {
     }
 
     // 2. 점수 계산
-    const sleepScore = calculateSleepScore(metadataList);
+    const sleepScore = this.calculateSleepScore(metadataList);
 
     // 3. 상태 업데이트
     session.sleep_score = sleepScore;
     session.sleep_status = 'completed';
     session.end_time = new Date();
 
-    return this.sleepRepo.save(session);
+    return this.sleepSessionRepository.save(session);
   }
 }

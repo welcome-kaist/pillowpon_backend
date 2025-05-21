@@ -21,7 +21,7 @@ export class UserController {
   @ApiBody({
     type: RegisterDTO,
   })
-  @ApiBearerAuth()
+  @ApiBearerAuth('access-token')
   @Post('register')
   async register(@Body() body: RegisterDTO) {
     const user_id = body?.user_id;
