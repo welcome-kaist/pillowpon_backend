@@ -12,7 +12,7 @@ export class MetadataController {
 
   @ApiOperation({
     summary: 'Metadata 저장 API',
-    description: '현재 로그인 된 user에 metadata 저장',
+    description: '해당하는 sleep session에 metadata 저장',
   })
   @ApiBody({
     type: CreateMetadataDTO,

@@ -42,4 +42,10 @@ export class UserService {
 
     return user;
   }
+
+  async getAllUsers(): Promise<UserEntity[]> {
+    return this.userRepository.find({
+      order: { user_id: 'ASC' },
+    });
+  }
 }

@@ -9,11 +9,6 @@ import { RegisterDTO } from 'src/dtos/user/register.dto';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Get('/main')
-  async getMainPage() {
-    return 'pillowpon backend';
-  }
-
   @ApiOperation({
     summary: 'User 등록 API',
     description: 'User 정보로 회원가입',
@@ -39,5 +34,14 @@ export class UserController {
       age,
       gender,
     );
+  }
+
+  @Get()
+  @ApiOperation({
+    summary: '전체 사용자 조회',
+    description: '모든 유저 정보를 반환',
+  })
+  async getAllUsers() {
+    return this.userService.getAllUsers();
   }
 }
