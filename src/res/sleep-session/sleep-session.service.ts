@@ -78,6 +78,7 @@ export class SleepSessionService {
   async getSessionsByUser(id: string): Promise<SleepSessionEntity[]> {
     return this.sleepSessionRepository.find({
       where: { user: { id } },
+      relations: ['metadata'],
       order: { start_time: 'DESC' },
     });
   }
