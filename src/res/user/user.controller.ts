@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Post, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
@@ -31,5 +31,22 @@ export class UserController {
   })
   async getAllUsers() {
     return this.userService.getAllUsers();
+  }
+
+  @Delete()
+  @ApiOperation({
+    summary: '사용자 삭제',
+    description: 'email로 특정 사용자 삭제',
+  })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        email: { type: 'string', example: 'test@kaist.ac.kr' },
+      },
+    },
+  })
+  async deleteUser(@Body('email') email: string) {
+    return this.userService.deleteUserByEmail(email);
   }
 }

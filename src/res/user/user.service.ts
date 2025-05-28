@@ -3,12 +3,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from 'src/entities/user.entity';
 import { Repository } from 'typeorm';
 import { hash } from 'bcrypt';
+import { AuthService } from 'src/auth/auth.service';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
+    private readonly authService: AuthService,
   ) {}
 
   async register(
@@ -17,7 +19,7 @@ export class UserService {
     name: string,
     age: number,
     gender: string,
-  ): Promise<UserEntity> {
+  ) {
     const hashedPassword = await hash(password, 10);
 
     const existedUser = await this.userRepository.findOne({
@@ -38,12 +40,22 @@ export class UserService {
       gender: gender,
     });
 
-    return user;
+    const token = await this.authService.logIn(user);
+    return token;
   }
 
   async getAllUsers(): Promise<UserEntity[]> {
     return this.userRepository.find({
       order: { email: 'ASC' },
     });
+  }
+
+  async deleteUserByEmail(email: string): Promise<{ message: string }> {
+    const user = await this.userRepository.findOne({ where: { email } });
+    if (!user) {
+      throw new BadRequestException('User not found');
+    }
+    await this.userRepository.delete({ email });
+    return { message: `User with email ${email} has been deleted` };
   }
 }

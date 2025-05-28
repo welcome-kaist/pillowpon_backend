@@ -20,7 +20,9 @@ export class SleepSessionEntity {
     example: 'test',
     description: '수면 세션을 소유한 사용자 ID',
   })
-  @ManyToOne(() => UserEntity, (user) => user.sleep_sessions)
+  @ManyToOne(() => UserEntity, (user) => user.sleep_sessions, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'user_id' })
   user: UserEntity;
 
