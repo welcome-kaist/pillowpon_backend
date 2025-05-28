@@ -10,7 +10,7 @@ export class AuthController {
 
   @ApiOperation({
     summary: '로그인 API',
-    description: 'user id 와 password로 local login',
+    description: 'email 와 password로 local login',
   })
   @ApiBody({ type: LoginDto })
   @UseGuards(LocalAuthGuard)
