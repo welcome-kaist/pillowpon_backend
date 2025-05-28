@@ -40,6 +40,7 @@ export class AuthService {
   }
   async logIn(user) {
     return {
+      user: user,
       accessToken: this.jwtService.sign(user),
     };
   }
