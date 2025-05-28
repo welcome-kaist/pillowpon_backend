@@ -19,21 +19,9 @@ export class UserController {
   @ApiBearerAuth('access-token')
   @Post('register')
   async register(@Body() body: RegisterDTO) {
-    const user_id = body?.user_id;
-    const password = body?.password;
-    const email = body?.email;
-    const name = body?.name;
-    const age = body?.age;
-    const gender = body?.gender;
+    const { email, password, name, age, gender } = body;
 
-    return this.userService.register(
-      user_id,
-      password,
-      email,
-      name,
-      age,
-      gender,
-    );
+    return this.userService.register(email, password, name, age, gender);
   }
 
   @Get()

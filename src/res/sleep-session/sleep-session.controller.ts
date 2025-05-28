@@ -35,7 +35,7 @@ export class SleepSessionController {
   async createSleepSession(@User() user) {
     console.log('>>> USER:', user);
     const sleepSession = await this.sleepSessionService.createSleepSession({
-      user_id: user.id,
+      id: user.id,
     });
 
     return sleepSession;

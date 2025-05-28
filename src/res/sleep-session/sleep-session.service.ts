@@ -24,10 +24,10 @@ export class SleepSessionService {
     return 0;
   }
 
-  async createSleepSession(data: { user_id: string }) {
+  async createSleepSession(data: { id: string }) {
     const existingSession = await this.sleepSessionRepository.findOne({
       where: {
-        user: { user_id: data.user_id },
+        user: { id: data.id },
         sleep_status: 'ongoing',
       },
     });
@@ -36,9 +36,9 @@ export class SleepSessionService {
       throw new BadRequestException('이미 진행 중인 수면 세션이 존재합니다.');
     }
 
-    const user = await this.userRepository.findOneBy({ user_id: data.user_id });
+    const user = await this.userRepository.findOneBy({ id: data.id });
     if (!user) {
-      throw new NotFoundException(`User with ID ${data.user_id} not found`);
+      throw new NotFoundException(`User with ID ${data.id} not found`);
     }
     const session = this.sleepSessionRepository.create({
       user,
@@ -75,9 +75,9 @@ export class SleepSessionService {
     return this.sleepSessionRepository.save(session);
   }
 
-  async getSessionsByUser(user_id: string): Promise<SleepSessionEntity[]> {
+  async getSessionsByUser(id: string): Promise<SleepSessionEntity[]> {
     return this.sleepSessionRepository.find({
-      where: { user: { user_id } },
+      where: { user: { id } },
       order: { start_time: 'DESC' },
     });
   }

@@ -1,16 +1,23 @@
-import { Entity, PrimaryColumn, Column, OneToMany } from 'typeorm';
+import {
+  Entity,
+  PrimaryColumn,
+  Column,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { MetadataEntity } from './metadata.entity';
 import { ApiProperty } from '@nestjs/swagger';
 import { SleepSessionEntity } from './sleep-session.entity';
 
 @Entity('User')
 export class UserEntity {
-  @ApiProperty({
-    example: 'test',
-    required: true,
-  })
-  @PrimaryColumn({ type: 'varchar', length: 50 })
-  user_id: string;
+  @ApiProperty({ example: 'uuid-string', required: true })
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
+
+  @ApiProperty({ example: 'test@kaist.ac.kr', required: true })
+  @Column({ type: 'varchar', length: 50, unique: true })
+  email: string;
 
   @ApiProperty({
     example: '1234',
@@ -18,13 +25,6 @@ export class UserEntity {
   })
   @Column({ type: 'varchar' })
   password: string;
-
-  @ApiProperty({
-    example: 'test@kaist.ac.kr',
-    required: true,
-  })
-  @Column({ type: 'varchar', length: 50, unique: true })
-  email: string;
 
   @ApiProperty({
     example: 'Bart Simpson',

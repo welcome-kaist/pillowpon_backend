@@ -12,10 +12,9 @@ export class UserService {
   ) {}
 
   async register(
-    user_id: string,
+    email: string,
     password: string,
     name: string,
-    email: string,
     age: number,
     gender: string,
   ): Promise<UserEntity> {
@@ -23,7 +22,7 @@ export class UserService {
 
     const existedUser = await this.userRepository.findOne({
       where: {
-        user_id: user_id,
+        email: email,
       },
     });
 
@@ -32,7 +31,6 @@ export class UserService {
     }
 
     const user = await this.userRepository.save({
-      user_id: user_id,
       name: name,
       password: hashedPassword,
       email: email,
@@ -45,7 +43,7 @@ export class UserService {
 
   async getAllUsers(): Promise<UserEntity[]> {
     return this.userRepository.find({
-      order: { user_id: 'ASC' },
+      order: { email: 'ASC' },
     });
   }
 }

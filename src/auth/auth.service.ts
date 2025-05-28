@@ -13,13 +13,14 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async validateUser(user_id: string, password: string) {
+  async validateUser(email: string, password: string) {
     const user = await this.userRepository.findOne({
-      where: { user_id: user_id },
+      where: { email: email },
     });
-
+    console.log(email, password);
+    console.log(user);
     if (!user) {
-      throw new BadRequestException('user id not exists');
+      throw new BadRequestException('email not exists');
     }
 
     // verify password
@@ -30,7 +31,7 @@ export class AuthService {
     }
 
     return {
-      user_id: user.user_id,
+      id: user.id,
       email: user.email,
       name: user.name,
       age: user.age,
