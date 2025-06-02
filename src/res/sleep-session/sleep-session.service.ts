@@ -121,6 +121,6 @@ export class SleepSessionService {
     const metadataList = session.metadata;
     const sleepScore = this.calculateSleepScore(metadataList);
 
-    return { sleepScore };
+    return { depth: sleepScore, time: new Date() };
   }
 }

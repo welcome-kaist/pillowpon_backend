@@ -66,11 +66,11 @@ export class SleepSessionController {
 
   @ApiBearerAuth('access-token')
   @UseGuards(JwtAuthGuard)
-  @Get(':id/score')
+  @Get(':id/depth')
   @ApiParam({ name: 'id', description: '조회할 수면 세션의 ID' })
   @ApiOperation({
-    summary: '수면 점수 조회 API',
-    description: '특정 수면 세션의 수면 점수를 조회',
+    summary: '수면 깊이 조회 API',
+    description: '특정 수면 세션의 수면 깊이를 조회',
   })
   async getSleepScore(@Param('id') sessionId: number) {
     return this.sleepSessionService.getSleepScore(sessionId);
