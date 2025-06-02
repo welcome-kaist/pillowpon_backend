@@ -20,8 +20,33 @@ export class SleepSessionService {
   ) {}
 
   calculateSleepScore(metadataList: MetadataEntity[]): number {
-    // TODO: sleep score 계산
-    return 0;
+    if (!metadataList || metadataList.length === 0) {
+      return 0;
+    }
+
+    const tempAvg =
+      metadataList.reduce((sum, m) => sum + (m.temperature ?? 0), 0) /
+      metadataList.length;
+    const lmAvg =
+      metadataList.reduce((sum, m) => sum + (m.accelerator ?? 0), 0) /
+      metadataList.length;
+    const hrAvg =
+      metadataList.reduce((sum, m) => sum + (m.body_detection ?? 0), 0) /
+      metadataList.length;
+
+    const temp_mean = 25;
+    const temp_std = 1;
+    const hr_mean = 7;
+    const hr_std = 1;
+    const lm_mean = 11;
+    const lm_std = 1;
+
+    const lm = (lmAvg - lm_mean) / lm_std;
+    const t = (tempAvg - temp_mean) / temp_std;
+    const sr = (hrAvg - hr_mean) / hr_std;
+
+    const rawScore = 25 * (lm * 0.660157 + t * -0.270903 + sr * -0.52088 + 2.0);
+    return Math.max(0, Math.min(100, 100 - rawScore));
   }
 
   async createSleepSession(data: { id: string }) {
@@ -33,7 +58,7 @@ export class SleepSessionService {
     });
 
     if (existingSession) {
-      throw new BadRequestException('이미 진행 중인 수면 세션이 존재합니다.');
+      return existingSession;
     }
 
     const user = await this.userRepository.findOneBy({ id: data.id });
@@ -81,5 +106,21 @@ export class SleepSessionService {
       relations: ['metadata'],
       order: { start_time: 'DESC' },
     });
+  }
+
+  async getSleepScore(sessionId: number) {
+    const session = await this.sleepSessionRepository.findOne({
+      where: { id: sessionId },
+      relations: ['metadata'],
+    });
+
+    if (!session) {
+      throw new NotFoundException(`Sleep session ${sessionId} not found`);
+    }
+
+    const metadataList = session.metadata;
+    const sleepScore = this.calculateSleepScore(metadataList);
+
+    return { sleepScore };
   }
 }
