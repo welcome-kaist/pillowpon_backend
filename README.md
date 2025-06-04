@@ -19,7 +19,7 @@ This repository contains the backend server implementation built using **NestJS*
 
 You can access the live Swagger API documentation here:
 
-👉 **[http://ec2-13-239-236-40.ap-southeast-2.compute.amazonaws.com:3000/api-docs#/](http://ec2-13-239-236-40.ap-southeast-2.compute.amazonaws.com:3000/api-docs#/)**
+👉 **[http://ec2-54-252-175-125.ap-southeast-2.compute.amazonaws.com:3000/api-docs#/](http://ec2-54-252-175-125.ap-southeast-2.compute.amazonaws.com:3000/api-docs#/)**
 
 This documentation includes all available endpoints, request/response schemas, and authentication methods.
 
