@@ -72,7 +72,7 @@ export class SleepSessionController {
     summary: '수면 깊이 조회 API',
     description: '특정 수면 세션의 수면 깊이를 조회',
   })
-  async getSleepScore(@Param('id') sessionId: number) {
-    return this.sleepSessionService.getSleepScore(sessionId);
+  async getSleepDepth(@Param('id') sessionId: number) {
+    return this.sleepSessionService.getSleepDepth(sessionId);
   }
 }

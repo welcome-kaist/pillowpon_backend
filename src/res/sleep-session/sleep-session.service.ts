@@ -49,6 +49,19 @@ export class SleepSessionService {
     return Math.max(0, Math.min(100, 100 - rawScore));
   }
 
+  calculateSleepDepth(metadataList: MetadataEntity[]): number {
+    if (!metadataList || metadataList.length === 0) {
+      return 0;
+    }
+
+    const sorted = metadataList.sort(
+      (a, b) => new Date(b.time).getTime() - new Date(a.time).getTime(),
+    );
+
+    const recent = sorted.slice(0, 3);
+    return this.calculateSleepScore(metadataList);
+  }
+
   async createSleepSession(data: { id: string }) {
     const existingSession = await this.sleepSessionRepository.findOne({
       where: {
@@ -108,7 +121,7 @@ export class SleepSessionService {
     });
   }
 
-  async getSleepScore(sessionId: number) {
+  async getSleepDepth(sessionId: number) {
     const session = await this.sleepSessionRepository.findOne({
       where: { id: sessionId },
       relations: ['metadata'],
@@ -119,7 +132,7 @@ export class SleepSessionService {
     }
 
     const metadataList = session.metadata;
-    const sleepScore = this.calculateSleepScore(metadataList);
+    const sleepScore = this.calculateSleepDepth(metadataList);
 
     return { depth: sleepScore, time: new Date() };
   }
