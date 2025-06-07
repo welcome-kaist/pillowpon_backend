@@ -59,7 +59,8 @@ export class SleepSessionService {
     );
 
     const recent = sorted.slice(0, 3);
-    return this.calculateSleepScore(metadataList);
+    console.log(recent);
+    return this.calculateSleepScore(recent);
   }
 
   async createSleepSession(data: { id: string }) {
